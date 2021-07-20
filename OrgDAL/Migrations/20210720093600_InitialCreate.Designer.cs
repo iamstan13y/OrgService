@@ -9,7 +9,7 @@ using OrgDAL;
 namespace OrgDAL.Migrations
 {
     [DbContext(typeof(OrganizationDbContext))]
-    [Migration("20210712090201_InitialCreate")]
+    [Migration("20210720093600_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,9 +23,7 @@ namespace OrgDAL.Migrations
             modelBuilder.Entity("OrgDAL.Department", b =>
                 {
                     b.Property<int>("Did")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("DName")
                         .HasColumnType("nvarchar(max)");

@@ -10,7 +10,7 @@ namespace OrgDAL
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer(@"Server=;Database=OrgAPIDb;Trusted_Connection=True;MultipleActiveResultSets=True");
+            optionsBuilder.UseSqlServer(@"Server=DESKTOP-LKQLTDG;Database=OrgAPIDb;Trusted_Connection=True;MultipleActiveResultSets=True");
         }
 
         public DbSet<Department> Departments { get; set; }

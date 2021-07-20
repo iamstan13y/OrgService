@@ -10,8 +10,7 @@ namespace OrgDAL.Migrations
                 name: "Department",
                 columns: table => new
                 {
-                    Did = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Did = table.Column<int>(nullable: false),
                     DName = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true)
                 },
