@@ -18,17 +18,25 @@ namespace OrgAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Department> Get()
+        public IActionResult Get()
         {
             var Depts = dbContext.Departments.ToList();
-            return Depts;
+
+            if (Depts.Count != 0)
+                return Ok(Depts);
+            else
+                return NotFound();
         }
 
         [HttpGet("{id}")]
-        public Department Get(int id)
+        public IActionResult Get(int id)
         {
             var Dept = dbContext.Departments.Where(x => x.Did == id).FirstOrDefault();
-            return Dept;
+
+            if (Dept != null)
+                return Ok(Dept);
+            else
+                return NotFound();
         }
 
         [HttpDelete("{id}")]
