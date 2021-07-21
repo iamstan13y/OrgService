@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OrgDAL;
 using System;
 using System.Collections.Generic;
@@ -64,11 +65,27 @@ namespace OrgAPI.Controllers
         }
 
         [HttpPut]
-        public string Put(Department D)
+        public IActionResult Put(Department D)
         {
-            dbContext.Update(D);
-            dbContext.SaveChanges();
-            return "Updated record successfully!";
+            var Dept = dbContext.Departments.Where(x => x.Did == D.Did).AsNoTracking().FirstOrDefault();
+            
+            if (Dept != null)
+            {
+                if (ModelState.IsValid)
+                {
+                    dbContext.Update(D);
+                    dbContext.SaveChanges();
+                    return Ok(D);
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }
