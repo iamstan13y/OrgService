@@ -29,10 +29,21 @@ namespace OrgAPI.Controllers
                 return NotFound();
         }
 
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        [HttpGet("getById/{id}")]
+        public IActionResult GetById(int id)
         {
             var Dept = dbContext.Departments.Where(x => x.Did == id).FirstOrDefault();
+
+            if (Dept != null)
+                return Ok(Dept);
+            else
+                return NotFound();
+        }
+
+        [HttpGet("getByName/{dName}")]
+        public IActionResult GetByName(string dName)
+        {
+            var Dept = dbContext.Departments.Where(x => x.DName == dName).FirstOrDefault();
 
             if (Dept != null)
                 return Ok(Dept);
