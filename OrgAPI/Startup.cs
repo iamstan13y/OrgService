@@ -24,6 +24,7 @@ namespace OrgAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(options => options.EnableEndpointRouting = false);
+            services.AddMvc(config => config.Filters.Add(new OrgExceptionFilter()));
             services.AddDbContext<OrganizationDbContext>();
             services.AddControllersWithViews()
                     .AddNewtonsoftJson(options =>
