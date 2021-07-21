@@ -19,9 +19,9 @@ namespace OrgAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var Depts = dbContext.Departments.ToList();
+            var Depts = await dbContext.Departments.ToListAsync();
 
             if (Depts.Count != 0)
                 return Ok(Depts);
@@ -30,9 +30,9 @@ namespace OrgAPI.Controllers
         }
 
         [HttpGet("getById/{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var Dept = dbContext.Departments.Where(x => x.Did == id).FirstOrDefault();
+            var Dept = await dbContext.Departments.Where(x => x.Did == id).FirstOrDefaultAsync();
 
             if (Dept != null)
                 return Ok(Dept);
@@ -41,9 +41,9 @@ namespace OrgAPI.Controllers
         }
 
         [HttpGet("getByIdAndName")]
-        public IActionResult GetByIdAndName(int id, string dName)
+        public async Task<IActionResult> GetByIdAndName(int id, string dName)
         {
-            var Dept = dbContext.Departments.Where(x => x.Did == id && x.DName == dName).FirstOrDefault();
+            var Dept = await dbContext.Departments.Where(x => x.Did == id && x.DName == dName).FirstOrDefaultAsync();
 
             if (Dept != null)
                 return Ok(Dept);
@@ -52,9 +52,9 @@ namespace OrgAPI.Controllers
         }
 
         [HttpGet("getByName/{dName}")]
-        public IActionResult GetByName(string dName)
+        public async Task<IActionResult> GetByName(string dName)
         {
-            var Dept = dbContext.Departments.Where(x => x.DName == dName).FirstOrDefault();
+            var Dept = await dbContext.Departments.Where(x => x.DName == dName).FirstOrDefaultAsync();
 
             if (Dept != null)
                 return Ok(Dept);
@@ -63,9 +63,9 @@ namespace OrgAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var Dept = dbContext.Departments.Where(x => x.Did == id).FirstOrDefault();
+            var Dept = await dbContext.Departments.Where(x => x.Did == id).FirstOrDefaultAsync();
 
             if (Dept != null)
             { 
@@ -80,12 +80,12 @@ namespace OrgAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(Department D)
+        public async Task<IActionResult> Post(Department D)
         {
             if (ModelState.IsValid)
             {
                 dbContext.Add(D);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
                 return CreatedAtAction("Get", new { id = D.Did}, D);
             }
             else
@@ -95,16 +95,19 @@ namespace OrgAPI.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put(Department D)
+        public async Task<IActionResult> Put(Department D)
         {
-            var Dept = dbContext.Departments.Where(x => x.Did == D.Did).AsNoTracking().FirstOrDefault();
+            var Dept = await dbContext.Departments
+                                .Where(x => x.Did == D.Did)
+                                .AsNoTracking().FirstOrDefaultAsync();
             
             if (Dept != null)
             {
                 if (ModelState.IsValid)
                 {
                     dbContext.Update(D);
-                    dbContext.SaveChanges();
+                    await dbContext
+                        .SaveChangesAsync();
                     return Ok(D);
                 }
                 else
