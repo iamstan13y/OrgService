@@ -21,7 +21,20 @@ namespace OrgAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var Depts = await dbContext.Departments.ToListAsync();
+            var Depts = await dbContext.Departments
+                .Select(x => new Department
+                {
+                    Did = x.Did,
+                    DName = x.DName,
+                    Description = x.Description,
+                    Employees = x.Employees.Select(y => new Employee
+                    {
+                        Eid = y.Eid,
+                        Name = y.Name,
+                        Gender = y.Gender
+                    })
+                })
+                .ToListAsync();
 
             if (Depts.Count != 0)
                 return Ok(Depts);

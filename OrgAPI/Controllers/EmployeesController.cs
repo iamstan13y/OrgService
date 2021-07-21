@@ -24,7 +24,16 @@ namespace OrgAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
-            var Emps = await _context.Employees.Include(shawty => shawty.Department).ToListAsync();
+            var Emps = await _context.Employees.Include(shawty => shawty.Department)
+                .Select(x => new Employee
+                {
+                    Eid = x.Eid,
+                    Name = x.Name,
+                    Gender = x.Gender,
+                    Did = x.Did,
+                    Department = x.Department
+                })
+                .ToListAsync();
             return Ok(Emps);
         }
 
