@@ -40,6 +40,17 @@ namespace OrgAPI.Controllers
                 return NotFound();
         }
 
+        [HttpGet("getByIdAndName")]
+        public IActionResult GetByIdAndName(int id, string dName)
+        {
+            var Dept = dbContext.Departments.Where(x => x.Did == id && x.DName == dName).FirstOrDefault();
+
+            if (Dept != null)
+                return Ok(Dept);
+            else
+                return NotFound();
+        }
+
         [HttpGet("getByName/{dName}")]
         public IActionResult GetByName(string dName)
         {
