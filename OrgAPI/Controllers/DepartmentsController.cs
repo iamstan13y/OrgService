@@ -41,12 +41,20 @@ namespace OrgAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public string Delete(int id)
+        public IActionResult Delete(int id)
         {
             var Dept = dbContext.Departments.Where(x => x.Did == id).FirstOrDefault();
-            dbContext.Remove(Dept);
-            dbContext.SaveChanges();
-            return "Record deleted successfully!";
+
+            if (Dept != null)
+            { 
+                dbContext.Remove(Dept);
+                dbContext.SaveChanges();
+                return Ok(Dept);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         [HttpPost]
