@@ -24,7 +24,8 @@ namespace OrgAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
-            return await _context.Employees.ToListAsync();
+            var Emps = await _context.Employees.Include(shawty => shawty.Department).ToListAsync();
+            return Ok(Emps);
         }
 
         // GET: api/Employees/5

@@ -25,6 +25,10 @@ namespace OrgAPI
         {
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddDbContext<OrganizationDbContext>();
+            services.AddControllersWithViews()
+                    .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                    );
             services.AddSwaggerDocument();
         }
 
