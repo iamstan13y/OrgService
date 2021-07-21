@@ -49,11 +49,18 @@ namespace OrgAPI.Controllers
         }
 
         [HttpPost]
-        public Department Post(Department D)
+        public IActionResult Post(Department D)
         {
-            dbContext.Add(D);
-            dbContext.SaveChanges();
-            return D;
+            if (ModelState.IsValid)
+            {
+                dbContext.Add(D);
+                dbContext.SaveChanges();
+                return CreatedAtAction("Get", new { id = D.Did}, D);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpPut]
