@@ -58,21 +58,28 @@ namespace OrgAPI.Controllers
         [HttpGet("getById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var Depts = await dbContext.Departments.Where(x => x.Did == id).FirstOrDefaultAsync();
-
-            if (Depts != null)
+            try
             {
-                var jsonResult = JsonConvert.SerializeObject(
-                    Depts,
-                    Formatting.None,
-                    new JsonSerializerSettings()
-                    {
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                    });
-                return Ok(jsonResult);
+                var Depts = await dbContext.Departments.Where(x => x.Did == id).FirstOrDefaultAsync();
+
+                if (Depts != null)
+                {
+                    var jsonResult = JsonConvert.SerializeObject(
+                        Depts,
+                        Formatting.None,
+                        new JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        });
+                    return Ok(jsonResult);
+                }
+                else
+                    return NotFound();
             }
-            else
-                return NotFound();
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Something went wrong, our clueless engineers are working on it!");
+            }
         }
 
         [HttpGet("getByIdAndName")]
