@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using OrgDAL;
 using System;
 using System.Collections.Generic;
@@ -18,23 +19,35 @@ namespace OrgAPI.Controllers
             this.dbContext = dbContext;
         }
 
+        //#1 Using Lambda Expressions.
+        //[HttpGet]
+        //public async Task<IActionResult> Get()
+        //{
+        //    var Depts = await dbContext.Departments
+        //        .Select(x => new Department
+        //        {
+        //            Did = x.Did,
+        //            DName = x.DName,
+        //            Description = x.Description,
+        //            Employees = x.Employees.Select(y => new Employee
+        //            {
+        //                Eid = y.Eid,
+        //                Name = y.Name,
+        //                Gender = y.Gender
+        //            })
+        //        })
+        //        .ToListAsync();
+
+        //    if (Depts.Count != 0)
+        //        return Ok(Depts);
+        //    else
+        //        return NotFound();
+        //}
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var Depts = await dbContext.Departments
-                .Select(x => new Department
-                {
-                    Did = x.Did,
-                    DName = x.DName,
-                    Description = x.Description,
-                    Employees = x.Employees.Select(y => new Employee
-                    {
-                        Eid = y.Eid,
-                        Name = y.Name,
-                        Gender = y.Gender
-                    })
-                })
-                .ToListAsync();
+            var Depts = await dbContext.Departments.ToListAsync();
 
             if (Depts.Count != 0)
                 return Ok(Depts);
@@ -45,10 +58,19 @@ namespace OrgAPI.Controllers
         [HttpGet("getById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var Dept = await dbContext.Departments.Where(x => x.Did == id).FirstOrDefaultAsync();
+            var Depts = await dbContext.Departments.Where(x => x.Did == id).FirstOrDefaultAsync();
 
-            if (Dept != null)
-                return Ok(Dept);
+            if (Depts != null)
+            {
+                var jsonResult = JsonConvert.SerializeObject(
+                    Depts,
+                    Formatting.None,
+                    new JsonSerializerSettings()
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    });
+                return Ok(jsonResult);
+            }
             else
                 return NotFound();
         }
