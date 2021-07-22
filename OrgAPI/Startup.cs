@@ -27,6 +27,9 @@ namespace OrgAPI
         {
             services.AddMvc(options => options.EnableEndpointRouting = false);
             //services.AddMvc(config => config.Filters.Add(new OrgExceptionFilter()));
+            services.AddMvc().AddXmlSerializerFormatters()
+                             .AddXmlDataContractSerializerFormatters();
+
             services.AddDbContext<OrganizationDbContext>();
             services.AddControllersWithViews()
                     .AddNewtonsoftJson(options =>

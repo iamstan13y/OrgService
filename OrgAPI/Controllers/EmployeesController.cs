@@ -9,6 +9,7 @@ using OrgDAL;
 
 namespace OrgAPI.Controllers
 {
+    [Produces("application/xml")]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeesController : ControllerBase
