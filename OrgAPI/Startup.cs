@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,7 +30,7 @@ namespace OrgAPI
         {
             services.AddMvc(options => options.EnableEndpointRouting = false);
             //services.AddMvc(config => config.Filters.Add(new OrgExceptionFilter()));
-            services.AddMvc().AddXmlSerializerFormatters()
+            services.AddMvc(x => x.Filters.Add(new AuthorizeFilter())).AddXmlSerializerFormatters()
                              .AddXmlDataContractSerializerFormatters();
 
             services.AddDbContext<OrganizationDbContext>();
@@ -36,7 +38,17 @@ namespace OrgAPI
                     .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                     );
-
+            services.ConfigureApplicationCookie(opt =>
+            {
+                opt.Events = new CookieAuthenticationEvents
+                {
+                    OnRedirectToLogin = redirectContext =>
+                    {
+                        redirectContext.HttpContext.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    }
+                };
+            });
             services.AddIdentity<IdentityUser, IdentityRole>()
                     .AddEntityFrameworkStores<OrganizationDbContext>()
                     .AddDefaultTokenProviders();
