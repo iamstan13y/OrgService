@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,7 +26,7 @@ namespace OrgAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(options => options.EnableEndpointRouting = false);
-            services.AddMvc(config => config.Filters.Add(new OrgExceptionFilter()));
+            //services.AddMvc(config => config.Filters.Add(new OrgExceptionFilter()));
             services.AddDbContext<OrganizationDbContext>();
             services.AddControllersWithViews()
                     .AddNewtonsoftJson(options =>
@@ -39,6 +41,21 @@ namespace OrgAPI
             app.UseDeveloperExceptionPage();
             app.UseOpenApi();
             app.UseSwaggerUi3();
+            app.UseExceptionHandler(
+                options =>
+                {
+                    options.Run(async context =>
+                    {
+                        context.Response.StatusCode = 500;
+                        context.Response.ContentType = "application/json";
+                        var ex = context.Features.Get<IExceptionHandlerFeature>();
+                        if (ex != null)
+                        {
+                            await context.Response.WriteAsync(ex.Error.Message);
+                        }
+                    });
+                }
+                );
             app.UseMvc();
         }
     }
