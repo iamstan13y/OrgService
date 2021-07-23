@@ -17,5 +17,6 @@ namespace OrgDAL
         [ForeignKey("Department")]
         public int Did { get; set; }
         public Department Department { get; set; }
+        public string Id { get; set; }
     }
 }
