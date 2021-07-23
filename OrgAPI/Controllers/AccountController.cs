@@ -40,7 +40,9 @@ namespace OrgAPI.Controllers
 
                     if (userResult.Succeeded)
                     {
-                        return Ok(user);
+                        var roleResult = await userManager.AddToRoleAsync(user, "User");
+                        if (roleResult.Succeeded)
+                            return Ok(user);
                     }
                     else
                     {

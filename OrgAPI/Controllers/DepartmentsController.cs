@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OrgDAL;
@@ -9,14 +11,17 @@ using System.Threading.Tasks;
 
 namespace OrgAPI.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class DepartmentsController : Controller
     {
         OrganizationDbContext dbContext;
-        public DepartmentsController(OrganizationDbContext dbContext)
+        UserManager<IdentityUser> userManager; 
+        public DepartmentsController(OrganizationDbContext dbContext, UserManager<IdentityUser> _userManager)
         {
             this.dbContext = dbContext;
+            userManager = _userManager;
         }
 
         //#1 Using Lambda Expressions.
@@ -126,6 +131,8 @@ namespace OrgAPI.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await userManager.FindByNameAsync(User.Identity.Name);
+                D.Id = user.Id;
                 dbContext.Add(D);
                 await dbContext.SaveChangesAsync();
                 return CreatedAtAction("Get", new { id = D.Did}, D);

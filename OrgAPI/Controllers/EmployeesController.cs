@@ -10,7 +10,7 @@ using OrgDAL;
 
 namespace OrgAPI.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, User")]
     [Produces("application/xml")]
     [Route("api/[controller]")]
     [ApiController]
