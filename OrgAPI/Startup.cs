@@ -28,6 +28,14 @@ namespace OrgAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddCors(
+            //    x => x.AddPolicy("herPolicy",
+            //    p => p.AllowAnyHeader()
+            //          .AllowAnyMethod()
+            //          .WithOrigins("")
+            //          .AllowCredentials()
+            //         ));
+
             services.AddMvc(options => options.EnableEndpointRouting = false);
             //services.AddMvc(config => config.Filters.Add(new OrgExceptionFilter()));
             services.AddMvc(x => x.Filters.Add(new AuthorizeFilter())).AddXmlSerializerFormatters()
@@ -76,6 +84,7 @@ namespace OrgAPI
                     });
                 }
                 );
+            //app.UseCors("herPolicy");
             app.UseAuthentication();
             app.UseMvc();
         }
