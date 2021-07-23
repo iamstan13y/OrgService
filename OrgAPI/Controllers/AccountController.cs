@@ -59,5 +59,27 @@ namespace OrgAPI.Controllers
                 return BadRequest(ModelState.Values);
             }
         }
+
+        [HttpPost("signIn")]
+        public async Task<IActionResult> SignIn(SignInViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var signInResult = await signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
+
+                if (signInResult.Succeeded)
+                {
+                    return Ok();
+                }
+            }
+            return BadRequest(ModelState);
+        }
+
+        [HttpPost("signOut")]
+        public async Task<IActionResult> SignOut(SignInViewModel model)
+        {
+            await signInManager.SignOutAsync();
+            return NoContent();
+        }
     }
 }
